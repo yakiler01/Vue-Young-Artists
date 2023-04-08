@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted ,watch} from "vue";
 import axios from 'axios';
 import { useRouter } from 'vue-router'
 import { EventStore } from '@/stores/EventStore'
@@ -14,6 +14,8 @@ import { ElMessage } from 'element-plus'
 
 //基於斷點的隱藏
 import 'element-plus/theme-chalk/display.css'
+
+
 
 //menu測試
 const activeIndex = ref('1')
@@ -73,7 +75,6 @@ const logOut = () => {
     localStorage.removeItem("token")
     cartStore.items = [];
 }
-
 const logOutSuccess = () => {
     ElMessage({
         message: '已成功登出',
@@ -153,31 +154,29 @@ const getKeyWord = (userInput: string) => {
                             <RouterLink to="/"><el-dropdown-item>首頁</el-dropdown-item></RouterLink>
                             <RouterLink to="/EventCardView"><el-dropdown-item>活動</el-dropdown-item></RouterLink>
                             <RouterLink to="/CommdityList"><el-dropdown-item>周邊商品</el-dropdown-item></RouterLink>
-                            <RouterLink to="/CustomerTicketView"><el-dropdown-item>訂購查詢</el-dropdown-item></RouterLink>
+                            <RouterLink to="/CustomerAreaView"><el-dropdown-item>訂購查詢</el-dropdown-item></RouterLink>
                             <a href="#aboutMe" target="_self"
                                 style="align-items: baseline;"><el-dropdown-item>關於我們</el-dropdown-item></a>
                             <RouterLink to="/ShopCart"><el-dropdown-item>購物車</el-dropdown-item></RouterLink>
                             <!-- <el-dropdown-item>會員專區</el-dropdown-item> -->
-                            <RouterLink to="/CustomerView" class="el-dropdown-item">
-                                <el-dropdown-item index="2-1" v-if="isLogin">
-                                    登入・註冊
-                                </el-dropdown-item>
-                            </RouterLink>
-                            <RouterLink to="/CustomerDataView" class="el-dropdown-item">
-                                <el-dropdown-item index="2-3" v-if="!isLogin">
-                                    會員專區
-                                </el-dropdown-item>
-                            </RouterLink>
-                            <RouterLink to="/CustomerTicketView" class="el-dropdown-item">
-                                <el-dropdown-item index="2-4" v-if="!isLogin">
-                                    查看訂單
-                                </el-dropdown-item>
-                            </RouterLink>
-                            <RouterLink to="/CustomerView" class="el-dropdown-item" @click="logOut">
-                                <el-dropdown-item divided v-if="!isLogin">
+                            <el-dropdown-item index="2-1" v-if="isLogin">
+                                <RouterLink to="/CustomerView" class="el-dropdown-item">登入・註冊
+                                </RouterLink>
+                            </el-dropdown-item>
+                            <el-dropdown-item index="2-3" v-if="!isLogin">
+                                <!-- <el-divider /> -->
+                                <RouterLink to="/CustomerDataView" class="el-dropdown-item">會員專區
+                                </RouterLink>
+                            </el-dropdown-item>
+                            <el-dropdown-item index="2-4" v-if="!isLogin">
+                                <RouterLink to="/CustomerTicketView" class="el-dropdown-item">查看訂單
+                                </RouterLink>
+                            </el-dropdown-item>
+                            <el-dropdown-item divided v-if="!isLogin">
+                                <RouterLink to="/CustomerView" class="el-dropdown-item" @click="logOut">
                                     登出
-                                </el-dropdown-item>
-                            </RouterLink>
+                                </RouterLink>
+                            </el-dropdown-item>
 
                         </el-dropdown-menu>
                     </template>
@@ -205,7 +204,7 @@ const getKeyWord = (userInput: string) => {
 
             <!-- 跳到商品購買 -->
             <el-menu-item index="3" class="hidden-md-and-down">
-                <RouterLink to="/CommdityList">
+                <RouterLink to="/CommdityListView">
                     <i class="fa-brands fa-shopify"></i>
                     <h3>周邊商品</h3>
                 </RouterLink>
@@ -213,7 +212,7 @@ const getKeyWord = (userInput: string) => {
 
             <!-- 跳到訂購查詢 -->
             <el-menu-item index="4" class="hidden-md-and-down">
-                <RouterLink to="/CustomerTicketView">
+                <RouterLink to="/CustomerAreaView">
                     <i class="fa-solid fa-barcode"></i>
                     <h3>訂購查詢</h3>
                 </RouterLink>
@@ -247,9 +246,10 @@ const getKeyWord = (userInput: string) => {
                         <span style="width: 50px;">單價</span>
                     </div>
                 </el-menu-item>
-                <el-menu-item index="6-2" v-for="cart in cartStore.items" v-show="cartStore.items.length > 0">
+                <el-menu-item index="6-2" v-for="cart in cartStore.items" v-show="cartStore.items.length > 0"
+                    @click="gotoCommodity(cart.commodityId)">
                     <!-- <span>{{cart.commodityName}} 暫定圖片商品名稱</span> -->
-                    <span style="width: 200px;" @click="gotoCommodity(cart.commodityId)">{{ cart.commodityName }}</span>
+                    <span style="width: 200px;">{{ cart.commodityName }}</span>
                     <span style="width: 50px;">{{ cart.quantityOrder }}</span>
                     <span style="width: 50px;">{{ cart.commodityPrice }}</span>
                     <span @click="removeItem(cart)"> <i class="fa-solid fa-trash"></i></span>
@@ -277,27 +277,24 @@ const getKeyWord = (userInput: string) => {
                     <i class="fa-solid fa-user"></i>
                     <h3>會員專區</h3><a v-if="!isLogin" v-show="name" style="margin-left: 5px;">Hi!{{ name }}</a>
                 </template>
-                <RouterLink to="/CustomerView" class="el-dropdown-item">
-                    <el-menu-item index="7-1" v-if="isLogin" style="width: 100%; display: flex; justify-content: center;">
-                        登入・註冊
-                    </el-menu-item>
-                </RouterLink>
-                <RouterLink to="/CustomerDataView" class="el-dropdown-item">
-                    <el-menu-item index="7-2" v-if="!isLogin" style="width: 100%; display: flex; justify-content: center;">
-                        會員資料
-                        <!-- <el-divider /> -->
-                    </el-menu-item>
-                </RouterLink>
-                <RouterLink to="/CustomerTicketView" class="el-dropdown-item">
-                    <el-menu-item index="7-3" v-if="!isLogin" style="width: 100%; display: flex; justify-content: center;">
-                        查看訂單
-                    </el-menu-item>
-                </RouterLink>
-                <RouterLink to="/CustomerView" class="el-dropdown-item" @click="logOut">
-                    <el-menu-item divided v-if="!isLogin" style="width: 100%; display: flex; justify-content: center;">
+                <el-menu-item index="7-1" v-if="isLogin">
+                    <RouterLink to="/CustomerView" class="el-dropdown-item">登入・註冊
+                    </RouterLink>
+                </el-menu-item>
+                <el-menu-item index="7-2" v-if="!isLogin">
+                    <!-- <el-divider /> -->
+                    <RouterLink to="/CustomerDataView" class="el-dropdown-item">會員資料
+                    </RouterLink>
+                </el-menu-item>
+                <el-menu-item index="7-3" v-if="!isLogin">
+                    <RouterLink to="/CustomerTicketView" class="el-dropdown-item">查看訂單
+                    </RouterLink>
+                </el-menu-item>
+                <el-menu-item divided v-if="!isLogin">
+                    <RouterLink to="/CustomerView" class="el-dropdown-item" @click="logOut">
                         登出
-                    </el-menu-item>
-                </RouterLink>
+                    </RouterLink>
+                </el-menu-item>
             </el-sub-menu>
 
             <!-- 客服 -->

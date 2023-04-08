@@ -49,8 +49,6 @@ onBeforeRouteLeave((to, from, next) => {
         } else {
             leaveTicketOrder(next)
         }
-    } else if (processStep.value == 3) {
-        next()
     }
 })
 

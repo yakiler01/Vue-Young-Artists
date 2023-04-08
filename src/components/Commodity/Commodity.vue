@@ -1,17 +1,19 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted,watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { useCartStore } from '@/stores/cart'
 import { CustomerStore } from '@/stores/CustomerStore';
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { log } from 'console';
 const router = useRouter()
 
 
 const cartStore = useCartStore()
 const customerStore = CustomerStore()
 
+const url = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
 
 //創建Pinia儲存拿資料
 //cartStore.addItem({a:'123'})
@@ -33,6 +35,9 @@ const route = useRoute()
 const CommodityId = route.params.CommodityId;
 const num = ref(1)
 const stock = ref("");
+
+
+
 
 const addShopCart = (async () => {
     //console.log(123);
@@ -94,7 +99,28 @@ const checkout = () => {
     addShopCart()
     router.push({ name: 'ShopCart' })
 }
+/* const getMap = () => {
 
+
+    const map = L.map(mapContainer.value, {
+        center: [23.611, 120.768],
+        zoom: 10,
+    });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    const address = "臺南市美術館2館";
+    const geocoder = L.Control.Geocoder.nominatim();
+    geocoder.geocode(address, (results: any) => {
+        const latlng = results[0].center;
+        const marker = L.marker(latlng).addTo(map);
+        map.setView(latlng, 18);
+    });
+
+    geocoder.addTo(map);
+} */
 
 onMounted(async () => {
 
@@ -132,6 +158,7 @@ onMounted(async () => {
         rate.value = rate.value / EvaluationForm.length
     })
 
+    //getMap()
     //查詢所有資料並計算筆數 做分頁用
     // await axios.get('https://localhost:44393/api/Commodities').then(response => {
     // console.log(response.data);

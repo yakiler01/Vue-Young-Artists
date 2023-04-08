@@ -79,14 +79,14 @@ const router = createRouter({
       component: () => import('../components/AnnouncementDetail/Detail.vue')
     },
     {
-      path: '/CommdityList',
-      name: 'CommdityList',
-      component: () => import('../views/CommodityList.vue')
+      path: '/CommdityListView',
+      name: 'CommdityListView',
+      component: () => import('../views/CommodityListView.vue')
     },
     {
       path: '/Commodity/:CommodityId',
       name: 'Commodity',
-      component: () => import('../views/Commodity.vue')
+      component: () => import('../views/CommodityView.vue')
     },
     {
       path: '/CustomerFavoriteEventView',

@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive,onMounted  } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import Navbar from "@/components/Navbar/Navbar.vue";
 import Commodity from "@/components/Commodity/Commodity.vue";
 import Categorybar from "@/components/Categorybar/Categorybar.vue";
 import { useCartStore } from '../stores/cart'
+import { now } from 'lodash';
+
 </script>
 
 <template>
     <el-container>
         <el-main>
-            <Navbar />
-            <Commodity />
+            <Navbar/>
+            <Commodity/>
         </el-main>
     </el-container>
     <el-backtop :right="100" :bottom="100" />
@@ -21,11 +23,9 @@ import { useCartStore } from '../stores/cart'
 <style lang="less" scoped>
 @TestColor: rgb(209, 209, 209);
 @NavbarColor: rgb(100, 192, 37);
-
 .Product-title {
-    font-size: 32px;
+    font-size: 32px ;
 }
-
 .el-container {
     width: 100%;
     height: 100%;

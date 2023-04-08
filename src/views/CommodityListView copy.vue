@@ -1,7 +1,7 @@
 <template>
   <Navbar />
-  <el-row style="margin-top: 40px;">
-    <el-col :span=5></el-col>
+  <el-row style="margin-top: 40px;margin-bottom: 30px;">
+    <el-col :span=6></el-col>
     <el-col :span=14>
       <el-row>
         <div style="width: 100%;">
@@ -35,10 +35,9 @@
                 <div class="commodityPrice">{{ product.commodityPrice }}.NT</div>
               </el-col>
               <el-col :span="6" :offset="10"><el-button round @click="gotoCommodity(product.id)"
-                  type="button">查看商品</el-button>
-              </el-col>
+                  type="button">查看商品</el-button></el-col>
             </el-row>
-
+            
             <span>
 
 
@@ -88,6 +87,8 @@ const url = ref("https://localhost:7165/Images/")
 const gotoCommodity = (CommodityId) => {
   //console.log(CommodityId);
   router.push({ name: 'Commodity', params: { CommodityId: CommodityId } })
+  console.log(CommodityId);
+  
   //router.push({ name: 'Commodity' });
 }
 const getProducts = async () => {
