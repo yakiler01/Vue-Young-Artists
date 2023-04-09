@@ -2,18 +2,13 @@
 import { ref, reactive, onMounted,watch } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
-import { useCartStore } from '@/stores/cart'
-import { CustomerStore } from '@/stores/CustomerStore';
+import { useCartStore } from '../../stores/cart'
+import { CustomerStore } from '../../stores/CustomerStore';
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { log } from 'console';
-const router = useRouter()
-
-
-const cartStore = useCartStore()
-const customerStore = CustomerStore()
-
-const url = 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+const router = useRouter();
+const cartStore = useCartStore();
+const customerStore = CustomerStore();
 
 //創建Pinia儲存拿資料
 //cartStore.addItem({a:'123'})
@@ -35,8 +30,6 @@ const route = useRoute()
 const CommodityId = route.params.CommodityId;
 const num = ref(1)
 const stock = ref("");
-
-
 
 
 const addShopCart = (async () => {
@@ -129,7 +122,7 @@ onMounted(async () => {
     //商品資料
     await axios.get(`https://localhost:44393/api/Commodities/${CommodityId}`).then(response => {
         Commodity = response.data
-        //console.log(Commodity);
+        console.log(Commodity);
         //console.log(productTitle.value);
         productNum.value = Commodity.commodityNum;
         productImg.value += Commodity.commodityImage;
@@ -149,7 +142,7 @@ onMounted(async () => {
     //商品評價
     await axios.get(`https://localhost:44393/api/EvaluationForms/commodity/${CommodityId}`).then(response => {
         EvaluationForm = response.data
-        //console.log(EvaluationForm);
+        console.log(EvaluationForm);
         for (let i = 0; i < EvaluationForm.length; i++) {
             rate.value += EvaluationForm[i].rate
             console.log(EvaluationForm.rate)
